@@ -22,7 +22,7 @@ function App() {
       <Router>
         <Navbar/>
         <Routes>
-          <Route path="/SubtitleForm" element={<SubsForm />} />
+          <Route path="/SubtitleForm" element={<SubsForm toggleTheme={toggleTheme} />} />
           <Route path="/" element={<SubsVisualization />} />
         </Routes>
       </Router>
