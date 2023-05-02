@@ -1,5 +1,4 @@
-import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
 export default function App () {
     const storedSubtitles = localStorage.getItem("subtitles");

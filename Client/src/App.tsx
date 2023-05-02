@@ -11,22 +11,20 @@ import { darkTheme, lightTheme } from './assets/Theme';
 function App() {
   const [theme, setTheme] = useState(darkTheme);
 
-  const toggleTheme = () => {
+  function toggleTheme(){
     setTheme(theme === darkTheme ? lightTheme : darkTheme);
   };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       
       <Router>
-        <Navbar/>
+        <Navbar toggleTheme={toggleTheme}/>
         <Routes>
-          <Route path="/SubtitleForm" element={<SubsForm toggleTheme={toggleTheme} />} />
+          <Route path="/SubtitleForm" element={<SubsForm/>} />
           <Route path="/" element={<SubsVisualization />} />
         </Routes>
       </Router>
-
     </ThemeProvider>
   );
 }

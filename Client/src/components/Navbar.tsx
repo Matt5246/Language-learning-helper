@@ -18,15 +18,12 @@ const pages = [
   { name: 'Subtitle visualizer', path: '/' },
 ];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props: { toggleTheme: () => void }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const settings = [
-    { name: 'Profile' },
-    { name: 'Account' },
-    { name: 'Theme' },
-    { name: 'Logout' },
+    { name: 'Theme', action: () => props.toggleTheme()}
   ];
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -77,9 +74,9 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.name} >
                     <Typography textAlign="center">
-                      <Link to={page.path} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Link to={page.path} onClick={handleCloseNavMenu} style={{ textDecoration: 'none', color: 'inherit' }}>
                         {page.name}
                       </Link>
                     </Typography>
@@ -110,7 +107,6 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page.name}
-                onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 <Link to={page.path} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -143,7 +139,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={()=>{handleCloseNavMenu}}>
+                <MenuItem key={setting.name} onClick={setting.action }>
                   <Typography textAlign="center" >{setting.name}</Typography>
                 </MenuItem>
               ))}
