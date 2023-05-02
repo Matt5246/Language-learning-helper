@@ -1,20 +1,25 @@
 import { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import  SubsEditor  from "../services/subtitlesEditor";
+import Switch from '@mui/material/Switch';
 
-function SubtitleForm() {
+function SubtitleForm(toggleTheme: any) {
   const [subtitleText, setSubtitleText] = useState("");
   const theme = useTheme();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(subtitleText);
+    const editedSubs = SubsEditor(subtitleText);
+    localStorage.setItem('subtitles', editedSubs);
   };
+  const label = { inputProps: { 'aria-label': 'Size switch demo' } };
 
   return (
     <div
       className="d-flex align-items-center justify-content-center vh-100"
     >
+        <Switch {...label} onChange={toggleTheme} />
       <div
         className="p-5"
         style={{
