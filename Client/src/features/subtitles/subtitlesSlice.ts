@@ -7,28 +7,28 @@ interface Subtitle {
     date: string;
   }
   
-  interface SubtitlesState {
-    subtitles: Subtitle[];
-    selectedSubtitles: string | null;
-  }
-  
-  const initialState: SubtitlesState = {
-    subtitles: [
-      {
-        id: "1",
-        title: "Subtitle 1",
-        content: "Subtitle \n1 \ncontent \nasdfasdfas",
-        date: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        title: "Subtitle 2",
-        content: "Subtitle \n2 \ncontent \nasdfasdfas",
-        date: new Date().toISOString(),
-      },
-    ],
-    selectedSubtitles: null,
-  };
+interface SubtitlesState {
+  subtitles: Subtitle[];
+  selectedSubtitles: string | null;
+}
+
+const initialState: SubtitlesState = {
+  subtitles: [
+    {
+      id: "1",
+      title: "Subtitle 1",
+      content: "Subtitle \n1 \ncontent \nasdfasdfas",
+      date: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      title: "Subtitle 2",
+      content: "Subtitle \n2 \ncontent \nasdfasdfas",
+      date: new Date().toISOString(),
+    },
+  ],
+  selectedSubtitles: null,
+};
   
   const subtitles = createSlice({
     name: "subtitles",

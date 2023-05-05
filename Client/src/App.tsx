@@ -7,24 +7,33 @@ import SubsVisualization from "./components/SubsVisualization";
 import { ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { darkTheme, lightTheme } from "./assets/Theme";
+import { useSelector } from "react-redux";
+import { selectBackgroundColor } from "./features/background/backgroundSlice";
+import { useEffect } from "react";
 
 function App() {
   const [theme, setTheme] = useState(darkTheme);
+  const backgroundColor = useSelector(selectBackgroundColor);
 
-  function toggleTheme() {
-    setTheme(theme === darkTheme ? lightTheme : darkTheme);
-  }
+  useEffect(() => {
+    if (backgroundColor === "dark") {
+      setTheme(darkTheme);
+    } else {
+      setTheme(lightTheme);
+    }
+    localStorage.setItem("Theme", backgroundColor);
+  }, [backgroundColor]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Navbar toggleTheme={toggleTheme} />
+        <Navbar />
         <Routes>
           <Route path="/" element={<SubsForm />} />
           <Route path="/SubsVisualization" element={<SubsVisualization />} />
         </Routes>
       </Router>
-
     </ThemeProvider>
   );
 }

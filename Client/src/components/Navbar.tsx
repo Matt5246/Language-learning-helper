@@ -10,20 +10,21 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   selectAllSubtitles,
   selectSubtitles,
 } from "../features/subtitles/subtitlesSlice";
 import { useDispatch } from "react-redux";
+import { toggleBackgroundColor } from "../features/background/backgroundSlice";
 
 const pages = [
   { name: "Translator", path: "/" },
   { name: "Visualizer", path: "/SubsVisualization" },
 ];
 
-function ResponsiveAppBar(props: { toggleTheme: () => void }) {
+function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -33,18 +34,20 @@ function ResponsiveAppBar(props: { toggleTheme: () => void }) {
   const [selectedSubtitle, setSelectedSubtitle] = React.useState<string | null>(
     null
   );
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const storedSubtitles = useSelector(selectAllSubtitles);
   const subtitles = storedSubtitles.map(subtitle => ({
     name: subtitle.title,
     action: () => (
       dispatch(selectSubtitles(subtitle.id)),
-      setSelectedSubtitle(subtitle.title)
+      setSelectedSubtitle(subtitle.title),
+      navigate("/SubsVisualization")
     ),
   }));
 
   const settings = [
-    { name: "Theme", action: () => props.toggleTheme() },
+    { name: "Theme", action: () => dispatch(toggleBackgroundColor()) },
     ...subtitles,
   ];
 

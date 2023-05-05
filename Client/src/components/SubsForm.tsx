@@ -5,9 +5,8 @@ import SubsEditor from "../services/subtitlesEditor";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { subtitlesAdded } from "../features/subtitles/subtitlesSlice";
-import Switch from '@mui/material/Switch';
 
-function SubtitleForm(toggleTheme: any) {
+function SubtitleForm() {
   const [subtitleText, setSubtitleText] = useState("");
   const [subtitleName, setSubtitleName] = useState("");
   const dispatch = useDispatch();
@@ -17,19 +16,16 @@ function SubtitleForm(toggleTheme: any) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const editedSubs = SubsEditor(subtitleText);
-    localStorage.setItem(subtitleName, editedSubs);
+    const subtitlesData = { name: subtitleName, text: editedSubs };
+    localStorage.setItem(subtitleName, JSON.stringify(subtitlesData));
     if (subtitleText && subtitleName) {
       dispatch(subtitlesAdded(subtitleName, editedSubs));
+      navigate("/SubsVisualization");
     }
-    navigate("/SubsVisualization");
   };
-  const label = { inputProps: { 'aria-label': 'Size switch demo' } };
 
   return (
-    <div
-      className="d-flex align-items-center justify-content-center vh-100"
-    >
-        <Switch {...label} onChange={toggleTheme} />
+    <div className="d-flex align-items-center justify-content-center vh-100">
       <div
         className="p-5"
         style={{
