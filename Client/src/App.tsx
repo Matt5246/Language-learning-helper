@@ -1,32 +1,39 @@
-import './App.css';
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import { useState } from 'react';
-import SubsForm from './components/SubsForm';
-import Navbar from './components/Navbar';
-import SubsVisualization from './components/SubsVisualization';
-import { ThemeProvider } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import { darkTheme, lightTheme } from './assets/Theme';
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useState } from "react";
+import SubsForm from "./components/SubsForm";
+import Navbar from "./components/Navbar";
+import SubsVisualization from "./components/SubsVisualization";
+import { ThemeProvider } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import { darkTheme, lightTheme } from "./assets/Theme";
+import { useSelector } from "react-redux";
+import { selectBackgroundColor } from "./features/background/backgroundSlice";
+import { useEffect } from "react";
 
 function App() {
   const [theme, setTheme] = useState(darkTheme);
+  const backgroundColor = useSelector(selectBackgroundColor);
 
-  const toggleTheme = () => {
-    setTheme(theme === darkTheme ? lightTheme : darkTheme);
-  };
+  useEffect(() => {
+    if (backgroundColor === "dark") {
+      setTheme(darkTheme);
+    } else {
+      setTheme(lightTheme);
+    }
+    localStorage.setItem("Theme", backgroundColor);
+  }, [backgroundColor]);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      
       <Router>
-        <Navbar/>
+        <Navbar />
         <Routes>
-          <Route path="/SubtitleForm" element={<SubsForm toggleTheme={toggleTheme} />} />
-          <Route path="/" element={<SubsVisualization />} />
+          <Route path="/" element={<SubsForm />} />
+          <Route path="/SubsVisualization" element={<SubsVisualization />} />
         </Routes>
       </Router>
-
     </ThemeProvider>
   );
 }
