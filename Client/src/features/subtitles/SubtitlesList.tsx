@@ -38,6 +38,7 @@ const SubtitlesList = () => {
         </TableRow>
       ));
   }
+
   return (
     <div>
       {contentSubtitles ? (
@@ -56,7 +57,7 @@ const SubtitlesList = () => {
         </TableContainer>
       ) : (
         <div className="d-flex align-items-center justify-content-center vh-100">
-          <h1>No Subtitles picked. Choose one in the profile menu</h1>
+          <h1>No Subtitles picked. Choose one in the profile menu </h1>
         </div>
       )}
     </div>

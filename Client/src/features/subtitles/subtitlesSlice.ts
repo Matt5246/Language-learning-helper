@@ -1,60 +1,60 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
-interface Subtitle {
-    id: string;
+export interface Subtitle {
+    id?: string;
     title: string;
     content: string;
-    date: string;
-  }
+    date?: string;
+}
   
-interface SubtitlesState {
+export interface SubtitlesState {
   subtitles: Subtitle[];
   selectedSubtitles: string | null;
 }
 
 const initialState: SubtitlesState = {
   subtitles: [
-    {
-      id: "1",
-      title: "Subtitle 1",
-      content: "Subtitle \n1 \ncontent \nasdfasdfas",
-      date: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      title: "Subtitle 2",
-      content: "Subtitle \n2 \ncontent \nasdfasdfas",
-      date: new Date().toISOString(),
-    },
   ],
   selectedSubtitles: null,
 };
   
-  const subtitles = createSlice({
-    name: "subtitles",
-    initialState,
-    reducers: {
-      subtitlesAdded: {
-        reducer(state, action: PayloadAction<Subtitle>) {
-          state.subtitles.push(action.payload);
-        },
-        prepare(title: string, content: string) {
-          return {
-            payload: {
-              id: nanoid(),
-              title,
-              content,
-              date: new Date().toISOString(),
-            },
-          };
-        },
+
+
+const subtitles = createSlice({
+  name: "subtitles",
+  initialState,
+  reducers: {
+    subtitlesAdded: {
+      reducer(state, action: PayloadAction<Subtitle[]>) {
+        action.payload.forEach(subtitle => {
+          state.subtitles.push(subtitle);
+        });
       },
-      selectSubtitles(state, action: PayloadAction<string>) {
-        state.selectedSubtitles = action.payload;
-      },
+      prepare(subtitles: Subtitle[]) {
+        const preparedSubtitles = subtitles.map(subtitle => {
+          if (!subtitle.id) {
+            subtitle.id = nanoid();
+          }
+          if (!subtitle.date) {
+            subtitle.date = new Date().toISOString();
+          }
+          return subtitle;
+        });
+        return {
+          payload: preparedSubtitles
+        };
+      }
       
     },
-  });
+    selectSubtitles(state, action: PayloadAction<string>) {
+      state.selectedSubtitles = action.payload;
+    },
+    subtitlesLoaded(state, action: PayloadAction<Subtitle[]>) {
+      state.subtitles = action.payload;
+    },
+  },
+  
+});
   
 export const selectAllSubtitles = (state: { subtitles: SubtitlesState }) => state.subtitles.subtitles;
 
@@ -64,12 +64,10 @@ export const selectSelectedSubtitles = (state: { subtitles: SubtitlesState }) =>
 state.subtitles.selectedSubtitles;
 
 export const selectedSubtitlesContent = (state: { subtitles: SubtitlesState }) =>
-  state.subtitles.subtitles.find(
-    (subtitle) => subtitle.id === state.subtitles.selectedSubtitles
-  )?.content;
-    
+state.subtitles.subtitles.find(
+  (subtitle) => subtitle.id === state.subtitles.selectedSubtitles
+)?.content;
 
-
-export const { subtitlesAdded, selectSubtitles} = subtitles.actions
+export const { subtitlesAdded, selectSubtitles, subtitlesLoaded} = subtitles.actions
 
 export default subtitles.reducer

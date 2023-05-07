@@ -9,6 +9,7 @@ import { subtitlesAdded } from "../features/subtitles/subtitlesSlice";
 function SubtitleForm() {
   const [subtitleText, setSubtitleText] = useState("");
   const [subtitleName, setSubtitleName] = useState("");
+
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -16,10 +17,12 @@ function SubtitleForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const editedSubs = SubsEditor(subtitleText);
-    const subtitlesData = { name: subtitleName, text: editedSubs };
-    localStorage.setItem(subtitleName, JSON.stringify(subtitlesData));
+    const subtitlesData = {
+      subtitles: [{ title: subtitleName, content: editedSubs }],
+    };
+    localStorage.setItem(subtitleName, JSON.stringify(editedSubs));
     if (subtitleText && subtitleName) {
-      dispatch(subtitlesAdded(subtitleName, editedSubs));
+      dispatch(subtitlesAdded(subtitlesData.subtitles));
       navigate("/SubsVisualization");
     }
   };
@@ -70,7 +73,7 @@ function SubtitleForm() {
             </Button>
             <Button
               className="mt-2 mt-xl-0 w-30"
-              variant="outlined"
+              variant="contained"
               onClick={() => {
                 navigator.clipboard.readText().then(text => {
                   setSubtitleText(text);
