@@ -4,7 +4,7 @@ body {
   font-size: 1.2rem;
   line-height: 1.5;
   background-color: #f8f9fa;
-  user-select: none;
+  
 }
 .card-style {
   backdrop-filter: blur(16px) saturate(180%);

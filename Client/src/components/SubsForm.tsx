@@ -18,9 +18,14 @@ function SubtitleForm() {
     event.preventDefault();
     const editedSubs = SubsEditor(subtitleText);
     const subtitlesData = {
-      subtitles: [{ title: subtitleName, content: editedSubs }],
+      subtitles: [
+        {
+          title: subtitleName,
+          content: editedSubs,
+        },
+      ],
     };
-    localStorage.setItem(subtitleName, JSON.stringify(editedSubs));
+    //localStorage.setItem(subtitleName, JSON.stringify(editedSubs));
     if (subtitleText && subtitleName) {
       dispatch(subtitlesAdded(subtitlesData.subtitles));
       navigate("/SubsVisualization");

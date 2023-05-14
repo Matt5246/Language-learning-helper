@@ -10,17 +10,9 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {
-  selectAllSubtitles,
-  selectSubtitles,
-  subtitlesAdded,
-} from "../features/subtitles/subtitlesSlice";
-import { useDispatch } from "react-redux";
-import { toggleBackgroundColor } from "../features/background/backgroundSlice";
-import { useAuth } from "../contexts/AuthContext";
-import { SettingsList } from "../types";
+import { Link } from "react-router-dom";
+import _ from "lodash";
+import Settings from "./Settings";
 
 const pages = [
   { name: "Translator", path: "/" },
@@ -34,54 +26,7 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [selectedSubtitle, setSelectedSubtitle] = React.useState<string | null>(
-    null
-  );
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const { currentUser, logout, saveSubtitles, loadSubtitles } = useAuth();
-  const storedSubtitles = useSelector(selectAllSubtitles);
-  async function LoadSubtitlesFromFirestore() {
-    const subtitle = await loadSubtitles();
-    dispatch(subtitlesAdded(subtitle!));
-  }
-
-  const settings: SettingsList = [
-    { name: "Theme", action: () => dispatch(toggleBackgroundColor()) },
-    { name: "Load", action: () => LoadSubtitlesFromFirestore() },
-  ];
-
-  if (currentUser) {
-    settings.push(
-      { name: currentUser?.email },
-      {
-        name: "Save",
-        action: () =>
-          // @ts-ignore
-          saveSubtitles(storedSubtitles)
-            .then(() => console.log("Subtitles saved successfully"))
-            .catch(error => console.error("Failed to save subtitles:", error)),
-      },
-      { name: "Logout", action: () => logout() }
-    );
-  } else {
-    settings.push(
-      { name: "Login", action: () => navigate("/account/signin") },
-      { name: "Register", action: () => navigate("/account/signup") }
-    );
-  }
-  const subtitles = storedSubtitles.map(subtitle => ({
-    name: subtitle.title,
-    action: () => (
-      dispatch(selectSubtitles(subtitle.id!)),
-      setSelectedSubtitle(subtitle.title),
-      navigate("/SubsVisualization")
-    ),
-  }));
-  if (subtitles) {
-    settings.push(...subtitles);
-  }
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -131,9 +76,8 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map(page => (
-                <MenuItem>
+                <MenuItem key={page.name}>
                   <Link
-                    key={page.name}
                     to={page.path}
                     onClick={handleCloseNavMenu}
                     style={{ textDecoration: "none", color: "inherit" }}
@@ -178,9 +122,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
               fontSize: "1.3rem",
             }}
-          >
-            {selectedSubtitle}
-          </Typography>
+          ></Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -202,12 +144,9 @@ function ResponsiveAppBar() {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
+              onClick={handleCloseUserMenu}
             >
-              {settings.map(setting => (
-                <MenuItem key={setting.name} onClick={setting.action}>
-                  <Typography textAlign="center">{setting.name}</Typography>
-                </MenuItem>
-              ))}
+              <Settings />
             </Menu>
           </Box>
         </Toolbar>

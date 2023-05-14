@@ -8,8 +8,7 @@ import { useSelector } from "react-redux";
 import { selectBackgroundColor } from "./features/background/backgroundSlice";
 import { useEffect } from "react";
 import LoginRoutes from "./components/loginPage/LoginRoutes";
-import Home from "./components/Home";
-import AuthProvider from "./contexts/AuthContext";
+import Home from "./components/App";
 
 function App() {
   const [theme, setTheme] = useState(darkTheme);
@@ -26,15 +25,13 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <CssBaseline />
-        <Router>
-          <Routes>
-            <Route path="/*" element={<Home />} />
-            <Route path="/account/*" element={<LoginRoutes />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route path="/*" element={<Home />} />
+          <Route path="/account/*" element={<LoginRoutes />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

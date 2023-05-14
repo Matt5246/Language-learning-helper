@@ -18,7 +18,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { Subtitle, SubtitlesState } from "../features/subtitles/subtitlesSlice";
+import { Subtitle } from "../features/subtitles/subtitlesSlice";
 
 interface AuthContextType {
   currentUser: User | any;
@@ -30,7 +30,7 @@ interface AuthContextType {
   updateMyPassword: (password: string) => Promise<void>;
   signInWithGoogle: () => Promise<UserCredential>;
   getUserData: () => Promise<DocumentData | null>;
-  saveSubtitles: (subtitles: SubtitlesState) => Promise<void>;
+  saveSubtitles: (subtitles: Subtitle[]) => Promise<void>;
   loadSubtitles: () => Promise<Subtitle[] | null>;
 }
 
@@ -128,17 +128,24 @@ export default function AuthProvider({
       return null;
     }
   }
-  async function saveSubtitles(subtitles: SubtitlesState): Promise<void> {
-    if (!currentUser) {
-      throw new Error("No current user found");
-    }
-    console.log("Saving subtitles", subtitles);
-    const docRef = doc(db, "users", currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) {
-      await setDoc(docRef, { subtitles });
-    } else {
-      await updateDoc(docRef, { subtitles });
+  async function saveSubtitles(subtitles: Subtitle[]): Promise<void> {
+    try {
+      if (!currentUser) {
+        throw new Error("No current user found");
+      }
+      if (!subtitles) {
+        throw new Error("No subtitles found");
+      } else {
+        const docRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+          await setDoc(docRef, { subtitles });
+        } else {
+          await updateDoc(docRef, { subtitles });
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

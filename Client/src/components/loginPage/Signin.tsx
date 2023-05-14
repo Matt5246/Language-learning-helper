@@ -3,14 +3,20 @@ import { Form, Card, Button, Alert } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { BsGoogle } from "react-icons/bs";
+import { useDispatch } from "react-redux";
+import { signin } from "../../features/user/firebaseSlice";
 
 export default function Signin() {
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
-  const { signin, signInWithGoogle } = useAuth();
+  const {
+    //signin,
+    signInWithGoogle,
+  } = useAuth();
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,7 +24,8 @@ export default function Signin() {
     try {
       setError("");
       setLoading(true);
-      await signin(emailRef?.current?.value!, passwordRef.current?.value!);
+      dispatch(signin(emailRef?.current?.value!, passwordRef.current?.value!));
+      //await signin(emailRef?.current?.value!, passwordRef.current?.value!);
       navigate("/");
     } catch (e) {
       console.log("signin, problem:", e);

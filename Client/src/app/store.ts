@@ -5,6 +5,8 @@ import userReducer from "../features/user/userSlice";
 import { ThunkAction } from 'redux-thunk';
 import { Action } from '@reduxjs/toolkit';
 import signupReducer from "../features/user/signupSlice";
+import  firebaseSlice from "../features/user/firebaseSlice";
+import signinSlice from "../features/user/signinSlice";
 
 export interface RootState {
     user: {
@@ -24,6 +26,16 @@ export interface RootState {
         }[];
         selectedSubtitles: string | null;
     };
+    background: {
+        color: string;
+    };
+    firebase: {
+        currentUser: any;
+    };
+    signin: {
+        loading: boolean;
+        error: string | null;
+    };
 }
 
 export type AppThunk<ReturnType = void> = ThunkAction<
@@ -39,5 +51,7 @@ export const store = configureStore({
         background: backgroundReducer,
         user: userReducer,
         signup: signupReducer,
+        firebase: firebaseSlice,
+        signin: signinSlice,
     }
 })
