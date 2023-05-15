@@ -10,18 +10,14 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {
-  selectAllSubtitles,
-  selectSubtitles,
-} from "../features/subtitles/subtitlesSlice";
-import { useDispatch } from "react-redux";
-import { toggleBackgroundColor } from "../features/background/backgroundSlice";
+import { Link } from "react-router-dom";
+import _ from "lodash";
+import Settings from "./Settings";
 
 const pages = [
   { name: "Translator", path: "/" },
   { name: "Visualizer", path: "/SubsVisualization" },
+  { name: "About", path: "/About" },
 ];
 
 function ResponsiveAppBar() {
@@ -31,25 +27,6 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [selectedSubtitle, setSelectedSubtitle] = React.useState<string | null>(
-    null
-  );
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const storedSubtitles = useSelector(selectAllSubtitles);
-  const subtitles = storedSubtitles.map(subtitle => ({
-    name: subtitle.title,
-    action: () => (
-      dispatch(selectSubtitles(subtitle.id)),
-      setSelectedSubtitle(subtitle.title),
-      navigate("/SubsVisualization")
-    ),
-  }));
-
-  const settings = [
-    { name: "Theme", action: () => dispatch(toggleBackgroundColor()) },
-    ...subtitles,
-  ];
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -100,9 +77,8 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map(page => (
-                <MenuItem>
+                <MenuItem key={page.name}>
                   <Link
-                    key={page.name}
                     to={page.path}
                     onClick={handleCloseNavMenu}
                     style={{ textDecoration: "none", color: "inherit" }}
@@ -147,13 +123,11 @@ function ResponsiveAppBar() {
               textDecoration: "none",
               fontSize: "1.3rem",
             }}
-          >
-            {selectedSubtitle}
-          </Typography>
+          ></Typography>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="" />
+                <Avatar alt="Remy Sharp" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -171,12 +145,9 @@ function ResponsiveAppBar() {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
+              onClick={handleCloseUserMenu}
             >
-              {settings.map(setting => (
-                <MenuItem key={setting.name} onClick={setting.action}>
-                  <Typography textAlign="center">{setting.name}</Typography>
-                </MenuItem>
-              ))}
+              <Settings />
             </Menu>
           </Box>
         </Toolbar>

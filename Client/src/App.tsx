@@ -1,15 +1,14 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import SubsForm from "./components/SubsForm";
-import Navbar from "./components/Navbar";
-import SubsVisualization from "./components/SubsVisualization";
 import { ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { darkTheme, lightTheme } from "./assets/Theme";
 import { useSelector } from "react-redux";
 import { selectBackgroundColor } from "./features/background/backgroundSlice";
 import { useEffect } from "react";
+import LoginRoutes from "./components/loginPage/LoginRoutes";
+import Home from "./components/App";
 
 function App() {
   const [theme, setTheme] = useState(darkTheme);
@@ -28,10 +27,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Navbar />
         <Routes>
-          <Route path="/" element={<SubsForm />} />
-          <Route path="/SubsVisualization" element={<SubsVisualization />} />
+          <Route path="/*" element={<Home />} />
+          <Route path="/account/*" element={<LoginRoutes />} />
         </Routes>
       </Router>
     </ThemeProvider>
