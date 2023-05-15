@@ -40,4 +40,5 @@ export interface UpdateSubsObjectPayload {
   id: string;
   learned?: boolean;
   hard?: boolean;
+  line?: string;
 }

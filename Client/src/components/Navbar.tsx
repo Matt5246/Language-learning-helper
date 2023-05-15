@@ -17,6 +17,7 @@ import Settings from "./Settings";
 const pages = [
   { name: "Translator", path: "/" },
   { name: "Visualizer", path: "/SubsVisualization" },
+  { name: "About", path: "/About" },
 ];
 
 function ResponsiveAppBar() {

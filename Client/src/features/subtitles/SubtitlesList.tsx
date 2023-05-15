@@ -1,12 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-} from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectAllSubtitles,
@@ -22,6 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { SubsObject } from "../../types";
 import { Tooltip } from "@mui/material";
 import { SubtitlesState } from "./subtitlesSlice";
+import { Button } from "@mui/material";
 
 const SubtitlesList = () => {
   const contentSubtitles = useSelector(selectedSubtitlesContent);
@@ -33,7 +26,6 @@ const SubtitlesList = () => {
   const selectedSubtitles = allSubtitles.find(
     subtitle => subtitle.id === selectedSubtitlesId
   );
-
   const handleSubtitleUpdate = (
     selectedSubtitlesId: string,
     subId: string,
@@ -47,108 +39,154 @@ const SubtitlesList = () => {
       })
     );
   };
+
   const handleSubtitleDelete = (selectedSubtitlesId: string, subId: string) => {
-    dispatch(
-      subtitleLineDelete({
-        selectedSubtitlesId: selectedSubtitlesId,
-        id: subId,
-      })
-    );
+    if (window.confirm("Are you sure you want to delete this subtitle?")) {
+      dispatch(
+        subtitleLineDelete({
+          selectedSubtitlesId: selectedSubtitlesId,
+          id: subId,
+        })
+      );
+    }
   };
+  const columns = [
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "time", headerName: "Time", editable: true, flex: 2 },
+    {
+      field: "line",
+      headerName: "Subtitle Text",
+      flex: 5,
+      editable: true,
+    },
+    {
+      field: "learned",
+      headerName: "Learned",
+      flex: 1,
+      renderCell: (params: { row: { id: string; learned: boolean } }) => {
+        const handleLearnedClick = () => {
+          handleSubtitleUpdate(selectedSubtitlesId, params.row.id, {
+            learned: true,
+          });
+        };
 
-  let rows: JSX.Element[] = [];
-  if (contentSubtitles) {
-    rows = contentSubtitles
-      .filter(sub => !sub.learned)
-      .map((sub: SubsObject, index: number) => (
-        <TableRow key={index} sx={{ padding: "8px" }}>
-          <TableCell component="th" scope="row">
-            {index + 1}
-          </TableCell>
-          <TableCell align="left">{sub.time}</TableCell>
-          <TableCell align="left">{sub.line}</TableCell>
-          <TableCell align="left">
-            <Tooltip title="Mark as known">
-              <IconButton
-                aria-label="mark as known"
-                onClick={() =>
-                  handleSubtitleUpdate(selectedSubtitlesId, sub.id, {
-                    learned: true,
-                  })
-                }
-              >
-                <CheckCircleIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Mark as hard">
-              <IconButton
-                aria-label="mark as hard"
-                onClick={() =>
-                  handleSubtitleUpdate(selectedSubtitlesId, sub.id, {
-                    hard: true,
-                  })
-                }
-              >
-                <HighlightOffIcon />
-              </IconButton>
-            </Tooltip>
-          </TableCell>
-          <TableCell align="left">
-            <Tooltip title="Delete subtitle">
-              <IconButton
-                aria-label="delete subtitle"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this subtitle?"
-                    )
-                  ) {
-                    handleSubtitleDelete(selectedSubtitlesId, sub.id);
-                  }
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </TableCell>
-        </TableRow>
-      ));
-  }
+        return (
+          <Tooltip title="Mark as known">
+            <IconButton
+              aria-label="Mark as known"
+              disabled={params.row.learned}
+              onClick={handleLearnedClick}
+            >
+              <CheckCircleIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      field: "hard",
+      headerName: "Hard",
+      flex: 1,
+      editable: true,
+      renderCell: (params: { row: { id: string; hard: boolean } }) => {
+        const handleHardClick = () => {
+          handleSubtitleUpdate(selectedSubtitlesId, params.row.id, {
+            hard: true,
+          });
+        };
 
+        return (
+          <Tooltip title="Mark as hard">
+            <IconButton
+              aria-label="Mark as hard"
+              disabled={params.row.hard}
+              onClick={handleHardClick}
+            >
+              <HighlightOffIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      field: "delete",
+      headerName: "Delete",
+      flex: 1,
+      renderCell: (params: { row: { id: string } }) => {
+        const handleDeleteClick = () => {
+          handleSubtitleDelete(selectedSubtitlesId, params.row.id);
+        };
+
+        return (
+          <Tooltip title="Delete">
+            <IconButton aria-label="Delete" onClick={handleDeleteClick}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+  ];
+
+  const rows = contentSubtitles
+    ? contentSubtitles
+        .filter(sub => !sub.learned)
+        .map(sub => {
+          return {
+            id: sub.id,
+            time: sub.time,
+            line: sub.line,
+            learned: sub.learned,
+            hard: sub.hard,
+          };
+        })
+    : [];
+
+  const handleDeleteSubtitles = () => {
+    if (window.confirm("Are you sure you want to Delete this subtitles?")) {
+      dispatch(subtitleDelete(selectedSubtitlesId));
+    }
+  };
   return (
-    <div>
+    <div style={{ height: 400, width: "100%" }}>
       {contentSubtitles ? (
         <>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>{selectedSubtitles?.title! || "#"}</TableCell>
-                  <TableCell>Time</TableCell>
-                  <TableCell>Subtitle Text</TableCell>
-                  <TableCell>Learned Hard</TableCell>
-                  <TableCell>Delete</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>{rows}</TableBody>
-            </Table>
-          </TableContainer>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            autoHeight
+            checkboxSelection
+            disableRowSelectionOnClick
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            componentsProps={{
+              toolbar: {
+                toolbar: { styles: { minHeight: "50px" } },
+              },
+            }}
+            processRowUpdate={(params: any) => {
+              const line = params?.line;
+
+              handleSubtitleUpdate(selectedSubtitlesId, params.id, {
+                line: line,
+              });
+              return params;
+            }}
+            onProcessRowUpdateError={(params: any) => {
+              console.log("onProcessRowUpdateError triggered:");
+              console.log(params);
+            }}
+          />
+
           <Button
             variant="contained"
             color="error"
             className="w-xl-50 w-30 "
-            style={{ display: "block", margin: "0 auto" }}
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Are you sure you want to Delete this subtitles?"
-                )
-              ) {
-                dispatch(subtitleDelete(selectedSubtitlesId));
-              }
-            }}
+            style={{ margin: "16px" }}
+            onClick={handleDeleteSubtitles}
           >
-            Delete Subtitles
+            Delete Subtitles {selectedSubtitles?.title}
           </Button>
         </>
       ) : (
@@ -159,5 +197,4 @@ const SubtitlesList = () => {
     </div>
   );
 };
-
 export default SubtitlesList;

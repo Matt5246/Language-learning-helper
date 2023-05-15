@@ -17,22 +17,22 @@ function Settings() {
   const dispatch = useDispatch();
   const { currentUser, logout, saveSubtitles, loadSubtitles } = useAuth();
   const storedSubtitles = useSelector(selectAllSubtitles);
-  //   useEffect(() => {
-  //     async function loadSubtitlesFromFirestore() {
-  //       const subtitlesFromFirestore = await loadSubtitles();
-  //       const storedSubtitlesIds = storedSubtitles.map(subtitle => subtitle.id);
-  //       const allSubtitlesExist = subtitlesFromFirestore?.every(subtitle =>
-  //         storedSubtitlesIds.includes(subtitle.id)
-  //       );
-  //       console.log("allSubtitlesExist: ", allSubtitlesExist);
-  //       if (allSubtitlesExist) {
-  //         console.log("All subtitles already exist in store.");
-  //       } else if (subtitlesFromFirestore !== null) {
-  //         dispatch(subtitlesAdded(subtitlesFromFirestore!));
-  //       }
+  // useEffect(() => {
+  //   async function loadSubtitlesFromFirestore() {
+  //     const subtitlesFromFirestore = await loadSubtitles();
+  //     const storedSubtitlesIds = storedSubtitles.map(subtitle => subtitle.id);
+  //     const allSubtitlesExist = subtitlesFromFirestore?.every(subtitle =>
+  //       storedSubtitlesIds.includes(subtitle.id)
+  //     );
+  //     console.log("allSubtitlesExist: ", allSubtitlesExist);
+  //     if (allSubtitlesExist) {
+  //       console.log("All subtitles already exist in store.");
+  //     } else if (subtitlesFromFirestore !== null) {
+  //       dispatch(subtitlesAdded(subtitlesFromFirestore!));
   //     }
-  //     loadSubtitlesFromFirestore();
-  //   }, [dispatch, loadSubtitles, storedSubtitles]);
+  //   }
+  //   loadSubtitlesFromFirestore();
+  // }, [dispatch, loadSubtitles, storedSubtitles]);
   async function loadSubtitlesFromFirestore() {
     const subtitlesFromFirestore = await loadSubtitles();
     const storedSubtitlesIds = storedSubtitles.map(subtitle => subtitle.id);

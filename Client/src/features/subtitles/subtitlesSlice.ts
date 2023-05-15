@@ -78,7 +78,7 @@ const subtitles = createSlice({
       }
     },
     updateSubsObject(state, action: PayloadAction<Partial<UpdateSubsObjectPayload>>) {
-      const { selectedSubtitlesId, id, learned, hard } = action.payload;
+      const { selectedSubtitlesId, id, learned, hard, line } = action.payload;
       const subtitlesIndex = state.subtitles.findIndex(subtitle => subtitle.id === selectedSubtitlesId);
       if (subtitlesIndex !== -1) {
         const subsIndex = state.subtitles[subtitlesIndex].content.findIndex(subsObj => subsObj.id === id);
@@ -88,6 +88,9 @@ const subtitles = createSlice({
           }
           if (hard !== undefined) {
             state.subtitles[subtitlesIndex].content[subsIndex].hard = !state.subtitles[subtitlesIndex].content[subsIndex].hard
+          }
+          if (line !== undefined) {
+            state.subtitles[subtitlesIndex].content[subsIndex].line = line;
           }
         }
       }

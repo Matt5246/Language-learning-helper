@@ -5,10 +5,13 @@ import SubsEditor from "../services/subtitlesEditor";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { subtitlesAdded } from "../features/subtitles/subtitlesSlice";
+import { FormControlLabel, RadioGroup, Radio } from "@mui/material";
 
 function SubtitleForm() {
   const [subtitleText, setSubtitleText] = useState("");
   const [subtitleName, setSubtitleName] = useState("");
+  const [seriesName, setSeriesName] = useState("");
+  const [selectedOption, setSelectedOption] = useState("yt");
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -16,7 +19,7 @@ function SubtitleForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const editedSubs = SubsEditor(subtitleText);
+    const editedSubs = SubsEditor(subtitleText, selectedOption);
     const subtitlesData = {
       subtitles: [
         {
@@ -31,7 +34,9 @@ function SubtitleForm() {
       navigate("/SubsVisualization");
     }
   };
-
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value);
+  };
   return (
     <div className="d-flex align-items-center justify-content-center vh-100">
       <div
@@ -44,6 +49,36 @@ function SubtitleForm() {
         }}
       >
         <form onSubmit={handleSubmit}>
+          <RadioGroup
+            aria-label="subsType"
+            name="subsType"
+            value={selectedOption}
+            onChange={handleOptionChange}
+            style={{ flexDirection: "row" }}
+          >
+            <FormControlLabel
+              value="yt"
+              control={<Radio color="primary" />}
+              label="yt"
+            />
+            <FormControlLabel
+              value="srt"
+              control={<Radio color="primary" />}
+              label=".srt"
+            />
+          </RadioGroup>
+
+          <TextField
+            id="subtitles-name"
+            label="Series title/name"
+            multiline
+            rows={1}
+            value={subtitleName}
+            onChange={event => setSeriesName(event.target.value)}
+            fullWidth
+            variant="outlined"
+            style={{ marginBottom: "1rem" }}
+          />
           <TextField
             id="subtitles-name"
             label="Subtitles name"
@@ -57,7 +92,7 @@ function SubtitleForm() {
           />
           <TextField
             id="subtitles-text"
-            label="YT Subtitles Text"
+            label="Subtitles Text"
             multiline
             rows={10}
             value={subtitleText}
